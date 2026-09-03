@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# env (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# convex (local deployment state, admin keys, dev DB)
+.convex/
+
+# build output
+dist/
+build/
+
+# typescript
+*.tsbuildinfo
+
+# vite / dev servers
+.vite/
+
+# logs & runtime
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
