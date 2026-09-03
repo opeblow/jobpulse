@@ -191,6 +191,10 @@ export default function Board({ onLogo }: Props) {
           </div>
         </header>
 
+        <p className="board-inbox mono num">
+          Forward emails to <span className="board-inbox-addr">opeyemi-8915@agentmail.to</span>
+        </p>
+
         {loading && (
           <div className="board-grid" aria-busy="true">
             {COLUMNS.map((c) => (

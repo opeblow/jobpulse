@@ -266,6 +266,20 @@
   color: var(--ink-3);
 }
 
+/* Mobile-only inbox hint (the sidebar's address is hidden when the sidebar collapses) */
+.board-inbox {
+  display: none;
+  margin: 0;
+  padding: 0 16px 10px;
+  font-size: 11px;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+}
+.board-inbox-addr {
+  font-weight: 600;
+  color: var(--teal);
+}
+
 /* ---------- Job card: letterhead + rubber stamp ---------- */
 
 .card {
@@ -585,8 +599,11 @@
   border-radius: 12px;
   width: 100%;
   max-width: 460px;
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
   box-shadow: 0 10px 40px color-mix(in srgb, #000 22%, transparent);
   padding: 20px;
+  -webkit-overflow-scrolling: touch;
 }
 .modal-head {
   display: flex;
@@ -702,12 +719,92 @@
   .side {
     display: none;
   }
-  .board-grid {
-    grid-template-columns: 1fr;
-    padding: 16px;
-  }
+
   .topbar {
     padding: 14px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(8px);
+  }
+  .topbar-actions .btn {
+    padding: 10px 14px;
+  }
+
+  /* Mobile kanban: horizontally swipeable columns with snap, instead of a long vertical stack */
+  .board-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    overflow-y: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    align-items: flex-start;
+    touch-action: pan-x pan-y;
+  }
+  .col {
+    flex: 0 0 min(84vw, 330px);
+    scroll-snap-align: start;
+  }
+  .col-list {
+    gap: 10px;
+  }
+
+  .board-caption {
+    margin: 0 16px 14px;
+  }
+
+  /* Show the inbox hint on mobile since the sidebar address is hidden */
+  .board-inbox {
+    display: block;
+  }
+
+  /* Card controls: comfortable touch targets */
+  .card-move,
+  .card-open {
+    padding: 8px 10px;
+    min-height: 34px;
+  }
+  .card-remove {
+    padding: 8px 10px;
+  }
+
+  /* Board empty on mobile */
+  .board-empty {
+    padding: 28px 20px;
+  }
+
+  /* Full-width modals that fit in the viewport */
+  .modal-backdrop {
+    padding: 16px 14px 16px;
+    align-items: flex-start;
+  }
+  .modal {
+    max-height: calc(100dvh - 32px);
+    padding: 18px 16px;
+  }
+  .coach-modal {
+    max-width: 100%;
+  }
+  .modal-foot {
+    flex-wrap: wrap;
+  }
+  .field-input {
+    font-size: 16px; /* prevents iOS autozoom */
+    padding: 12px;
+  }
+
+  /* Toast sits safely above the thumb zone */
+  .toast-container {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+  }
+  .toast {
+    width: 100%;
   }
 }
 
