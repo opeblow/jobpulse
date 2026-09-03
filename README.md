@@ -48,14 +48,14 @@ Everything runs on **Convex** — database, type-safe functions, and live real-t
 
 | Feature | What it does |
 |---------|--------------|
-| 🗂️ **Kanban board** | Drag cards between **Applied → Interview → Offer → Rejected**. Updates sync live across every open tab via Convex subscriptions. |
-| 🔗 **Add-from-URL** | Paste a job posting and **Firecrawl** scrapes it while **OpenAI** extracts company, role, location, salary, and requirements. |
-| ✅ **Application checklist** | OpenAI drafts a tailored checklist from the actual posting — missing skill? It's in the list. |
-| 📥 **AI inbox** | Forward application emails to `your@agentmail.to` and they're **classified** (interview / offer / rejected / follow-up) and **matched to the right job card**. |
-| 🎯 **AI Application Coach** | Fit score, skill gaps, company intel, and interview prep for any role. |
-| ✍️ **AI draft replies** | Draft professional follow-up responses and send them straight from the app via AgentMail. |
-| 📊 **Analytics dashboard** | Response rate, interview/offer/conversion rates, time-to-first-response, company count. |
-| 🌗 **Dark / light mode** | Banker-brown-and-cream aesthetic that keeps the board readable in both. |
+| **Kanban board** | Drag cards between **Applied → Interview → Offer → Rejected**. Updates sync live across every open tab via Convex subscriptions. |
+| **Add-from-URL** | Paste a job posting and **Firecrawl** scrapes it while **OpenAI** extracts company, role, location, salary, and requirements. |
+| **Application checklist** | OpenAI drafts a tailored checklist from the actual posting — missing skill? It's in the list. |
+| **AI inbox** | Forward application emails to `your@agentmail.to` and they're **classified** (interview / offer / rejected / follow-up) and **matched to the right job card**. |
+| **AI Application Coach** | Fit score, skill gaps, company intel, and interview prep for any role. |
+| **AI draft replies** | Draft professional follow-up responses and send them straight from the app via AgentMail. |
+| **Analytics dashboard** | Response rate, interview/offer/conversion rates, time-to-first-response, company count. |
+| **Dark / light mode** | Banker-brown-and-cream aesthetic that keeps the board readable in both. |
 
 ---
 
