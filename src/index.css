@@ -1,0 +1,141 @@
+/* ============================================================
+   JobPulse design tokens
+   Warm editorial ink + paper system — deliberately distinct
+   from Stripe's blue/purple. The accent is a burnt "ember"
+   that reads as a pulse of activity, used only for state.
+   ============================================================ */
+
+:root {
+  /* Light theme */
+  --ink: #21190f;
+  --ink-2: #5b5041;
+  --ink-3: #95876f;
+  --paper: #f6f1e8;
+  --surface: #fdfaf3;
+  --surface-2: #f0e9dc;
+  --line: #e5dac8;
+  --line-strong: #d3c5ae;
+
+  --accent: #c85212; /* ember */
+  --accent-strong: #a9430d;
+  --teal: #0d6a58;
+  --gold: #96660f;
+  --rose: #ab3a27;
+
+  --stamp-ink: rgba(33, 25, 15, 0.72);
+
+  --display: "Fraunces", Georgia, serif;
+  --sans: "Inter", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --side-w: 256px;
+  --radius: 10px;
+  --radius-sm: 6px;
+
+  --shadow-1: 0 1px 0 rgba(33, 25, 15, 0.06);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 32%, transparent);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --ink: #f1e9db;
+  --ink-2: #c2b6a2;
+  --ink-3: #83775f;
+  --paper: #16120d;
+  --surface: #1d1811;
+  --surface-2: #272017;
+  --line: #33291c;
+  --line-strong: #4a3c29;
+
+  --accent: #ef7d34;
+  --accent-strong: #ff9a57;
+  --teal: #43b494;
+  --gold: #d1a142;
+  --rose: #e07a63;
+
+  --stamp-ink: rgba(241, 233, 219, 0.78);
+
+  --shadow-1: 0 1px 0 rgba(0, 0, 0, 0.4);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* Right-aligned, tabular numerals for data — Stripe's table language */
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- App shell / routing ---------- */
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
