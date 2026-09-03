@@ -69,35 +69,65 @@
 ## File structure
 
 ```
-convex/
-  schema.ts          — Jobs + emails tables with indexes
-  jobs.ts            — CRUD mutations and queries for job cards
-  emails.ts          — Email storage, classification application
-  addJob.ts          — Firecrawl + OpenAI action for adding jobs
-  coach.ts           — AI Application Coach (Firecrawl research + OpenAI coaching)
-  sendEmail.ts       — AgentMail outbound + AI draft reply actions
-  http.ts            — AgentMail webhook handler (inbound email)
-  analytics.ts       — Pipeline statistics query
-  ai.ts              — OpenAI helper + env vars + AgentMail config
-
-src/
-  App.tsx            — Router (landing / board)
-  main.tsx           — Convex + Toast providers
-  board.ts           — Column definitions, status metadata
-  theme.tsx          — Dark/light mode context
-  screens/
-    Landing.tsx      — Marketing entry screen
-    Board.tsx        — Main board with sidebar analytics
-  components/
-    Column.tsx       — Droppable column with drag-and-drop
-    JobCard.tsx      — Draggable card with detail expansion + fit-score badge
-    AddJobModal.tsx  — URL input → Firecrawl → OpenAI pipeline
-    SendEmailModal.tsx — Compose and send via AgentMail
-    DraftReplyModal.tsx — AI-drafted email replies
-    CoachModal.tsx   — AI Application Coach panel (fit score, gaps, prep)
-    ThemeToggle.tsx  — Dark/light switch
-    Toast.tsx        — Toast notification system
-    LiveBoard.tsx    — Animated SVG hero illustration
+jobpulse/
+├─ .env.example                # Required API keys template
+├─ .gitignore                  # Env, build, and Convex state ignored
+├─ index.html                  # Vite entry + favicon links
+├─ package.json                # Scripts: dev, build, typecheck, convex:*
+├─ tsconfig.json               # TypeScript config
+├─ vite.config.ts              # Vite config
+├─ README.md                   # Project overview, badges, setup
+├─ hackathon.md                # This build log
+│
+├─ convex/                     # Convex backend
+│  ├─ _generated/              # Auto-generated client/server types
+│  ├─ schema.ts                # Jobs + emails tables, fields, indexes
+│  ├─ jobs.ts                  # CRUD mutations + queries for job cards
+│  ├─ emails.ts                # Email storage, classification → job matching
+│  ├─ addJob.ts                # Action: Firecrawl scrape + OpenAI extraction
+│  ├─ coach.ts                 # Action: AI Application Coach (intel + coaching)
+│  ├─ sendEmail.ts             # Action: AgentMail outbound + AI draft replies
+│  ├─ http.ts                  # HTTP action: AgentMail webhook (/webhook/agentmail)
+│  ├─ analytics.ts             # Query: pipeline statistics
+│  ├─ ai.ts                    # OpenAI helper + env vars + AgentMail config
+│  └─ tsconfig.json
+│
+├─ src/                        # React frontend
+│  ├─ main.tsx                 # Convex client + Toast providers + router
+│  ├─ App.tsx                  # Landing / board route switch
+│  ├─ board.ts                 # Column definitions, status metadata
+│  ├─ theme.tsx                # Dark / light mode context
+│  ├─ index.css                # Design tokens (ink, paper, ember, teal)
+│  ├─ board.css                # Kanban board + card styles
+│  ├─ landing.css              # Marketing screen styles
+│  ├─ liveboard.css            # Hero animation styles
+│  ├─ screens/
+│  │  ├─ Landing.tsx           # Marketing entry screen
+│  │  └─ Board.tsx             # Main board + analytics sidebar
+│  └─ components/
+│     ├─ Column.tsx            # Droppable column with drag-and-drop
+│     ├─ JobCard.tsx           # Draggable card + fit-score badge + coach button
+│     ├─ AddJobModal.tsx       # URL → Firecrawl → OpenAI pipeline
+│     ├─ SendEmailModal.tsx    # Compose + send via AgentMail
+│     ├─ DraftReplyModal.tsx   # AI-drafted email replies
+│     ├─ CoachModal.tsx        # AI Coach panel (fit score, gaps, interview prep)
+│     ├─ ThemeToggle.tsx       # Dark / light switch
+│     ├─ Toast.tsx             # Toast notifications
+│     └─ LiveBoard.tsx         # Animated SVG hero illustration
+│
+├─ public/                     # Static assets (favicons, logo)
+│  ├─ favicon.svg
+│  ├─ favicon-16.png
+│  ├─ favicon-32.png
+│  ├─ favicon-48.png
+│  └─ apple-touch-icon.png
+│
+└─ scripts/                    # Node tooling
+   ├─ test.mjs                 # Core endpoint suite (11 tests)
+   ├─ test-all.mjs             # Full integration suite (41 tests)
+   ├─ verify-all.mjs           # Assert-based verification (41 checks)
+   ├─ seed.mjs                 # Local seed helper
+   └─ gen-favicon.mjs          # PNG favicon generator (zlib encoder)
 ```
 
 ## Convex features used
