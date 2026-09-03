@@ -26,8 +26,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# editor / OS
+# editor / OS / agent tooling
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+.agents/
