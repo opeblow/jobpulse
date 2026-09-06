@@ -36,6 +36,7 @@ export default defineSchema(
         v.literal("rejected"),
       ),
       status: v.string(),
+      lastStatusChangeAt: v.optional(v.number()),
       note: v.optional(v.string()),
       createdAt: v.number(),
       updatedAt: v.number(),
@@ -70,6 +71,7 @@ export default defineSchema(
       agentmailId: v.string(),
       from: v.string(),
       subject: v.string(),
+      threadId: v.optional(v.string()),
       text: v.optional(v.string()),
       classification: v.union(
         v.literal("interview"),

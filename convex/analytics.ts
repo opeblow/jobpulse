@@ -21,7 +21,7 @@ export const stats = query({
     const responseTimes: number[] = [];
     for (const job of jobs) {
       if (job.column !== "applied") {
-        const delta = job.updatedAt - job.createdAt;
+        const delta = (job.lastStatusChangeAt ?? job.createdAt) - job.createdAt;
         if (delta > 0 && delta < 90 * 24 * 60 * 60 * 1000) {
           responseTimes.push(delta);
         }

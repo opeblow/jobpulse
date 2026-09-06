@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import type { Column, EmailClassification } from "./schema";
+import { columnStatus } from "./jobs";
+import type { Column } from "./schema";
 
 export const list = query({
   args: {},
@@ -8,12 +9,25 @@ export const list = query({
     return ctx.db.query("emails").withIndex("by_receivedAt").order("desc").take(50);
   },
 });
-
 export const remove = mutation({
   args: { emailId: v.id("emails") },
   handler: async (ctx, { emailId }) => {
     await ctx.db.delete(emailId);
   },
+});
+export const getByAgentmailId = query({
+  args: { agentmailId: v.string() },
+  handler: async (ctx, { agentmailId }) => {
+    return ctx.db
+      .query("emails")
+      .withIndex("by_agentmailId", (q) => q.eq("agentmailId", agentmailId))
+      .first();
+  },
+});
+
+export const get = query({
+  args: { emailId: v.id("emails") },
+  handler: async (ctx, { emailId }) => ctx.db.get(emailId),
 });
 
 export const insertProcessed = mutation({
@@ -21,6 +35,7 @@ export const insertProcessed = mutation({
     agentmailId: v.string(),
     from: v.string(),
     subject: v.string(),
+    threadId: v.optional(v.string()),
     text: v.optional(v.string()),
     classification: v.union(
       v.literal("interview"),
@@ -37,6 +52,7 @@ export const insertProcessed = mutation({
       agentmailId: args.agentmailId,
       from: args.from,
       subject: args.subject,
+      threadId: args.threadId,
       text: args.text,
       classification: args.classification,
       summary: args.summary,
@@ -68,31 +84,24 @@ export const applyClassificationToJob = mutation({
 
     if (classification === "interview") {
       column = "interview";
-      status = detail ? detail : "Interview scheduled";
+      status = columnStatus(column, detail);
     } else if (classification === "offer") {
       column = "offer";
-      status = detail ? `Offer — ${detail}` : "Offer received";
+      status = columnStatus(column, detail);
     } else if (classification === "rejected") {
       column = "rejected";
-      status = detail ? `Not selected — ${detail}` : "Not selected";
+      status = columnStatus(column, detail);
     } else if (classification === "followup") {
       status = "Needs follow-up";
     }
 
-    await ctx.db.patch(jobId, { column, status, updatedAt: now });
+    await ctx.db.patch(jobId, {
+      column,
+      status,
+      lastStatusChangeAt: now,
+      updatedAt: now,
+    });
     await ctx.db.patch(emailId, { jobId });
   },
 });
 
-export function classifyToColumn(classification: EmailClassification): Column | null {
-  switch (classification) {
-    case "interview":
-      return "interview";
-    case "offer":
-      return "offer";
-    case "rejected":
-      return "rejected";
-    default:
-      return null;
-  }
-}

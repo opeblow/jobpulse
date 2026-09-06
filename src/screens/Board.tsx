@@ -55,8 +55,9 @@ export default function Board({ onLogo }: Props) {
   const rejectedCount = grouped.rejected.length;
 
   const move = (jobId: string, column: ColumnKey) => {
-    void setColumn({ jobId: jobId as any, column });
-    toast(`Moved to ${column}`, "info");
+    void setColumn({ jobId: jobId as any, column })
+      .then(() => toast(`Moved to ${column}`, "info"))
+      .catch(() => toast("Move failed", "error"));
   };
   const onRemove = (jobId: string) => {
     if (window.confirm("Delete this application?")) {

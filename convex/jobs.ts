@@ -41,6 +41,7 @@ export const create = mutation({
       checklist: args.checklist,
       column: args.column,
       status: args.status,
+      lastStatusChangeAt: now,
       note: args.note,
       createdAt: now,
       updatedAt: now,
@@ -84,6 +85,7 @@ export const setColumn = mutation({
     await ctx.db.patch(jobId, {
       column,
       status,
+      lastStatusChangeAt: Date.now(),
       updatedAt: Date.now(),
     });
   },
@@ -148,7 +150,7 @@ export const patchCoach = mutation({
   },
 });
 
-function columnStatus(
+export function columnStatus(
   column: (typeof columns)[number],
   detail: string | undefined,
 ): string {

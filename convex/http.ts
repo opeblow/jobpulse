@@ -29,8 +29,14 @@ http.route({
       return new Response("missing message id", { status: 200 });
     }
 
+    const existing = await ctx.runQuery(api.emails.getByAgentmailId, { agentmailId });
+    if (existing) {
+      return jsonResponse({ ok: true, deduped: true });
+    }
+
     const from = extractSender(message) ?? "";
     const subject = (message.subject ?? "").toString();
+    const threadId = (message.thread_id ?? message.threadId ?? "").toString() || undefined;
     const bodyText =
       (message.text ?? "").toString() ||
       stripHtml((message.html ?? "").toString()) ||
@@ -59,13 +65,14 @@ http.route({
       agentmailId,
       from,
       subject,
+      threadId,
       text: truncate(bodyText, 4000) || undefined,
       classification,
       summary,
       receivedAt: Date.now(),
     });
 
-    // Match against known jobs by company / role.
+    // Match against known jobs by company, then use role only when no company was extracted.
     const jobs = await ctx.runQuery(api.jobs.list);
     const match = matchJob(jobs, emailCompany, emailRole);
     if (match) {
@@ -156,10 +163,19 @@ function matchJob(
   for (const job of jobs) {
     if (emailCompany && fuzzyIncludes(job.company, emailCompany)) return job;
   }
-  for (const job of jobs) {
-    if (emailRole && fuzzyIncludes(job.role, emailRole)) return job;
+  if (!emailCompany) {
+    for (const job of jobs) {
+      if (emailRole && fuzzyIncludes(job.role, emailRole)) return job;
+    }
   }
   return null;
+}
+
+function jsonResponse(payload: Record<string, unknown>): Response {
+  return new Response(JSON.stringify(payload), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
 function parseJSON(text: string): any {

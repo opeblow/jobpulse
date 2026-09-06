@@ -11,8 +11,11 @@ export const sendEmail = action({
     subject: v.string(),
     text: v.string(),
     jobId: v.optional(v.id("jobs")),
+    threadId: v.optional(v.string()),
   },
-  handler: async (_ctx, { to, subject, text }) => {
+  handler: async (_ctx, { to, subject, text, threadId }) => {
+    const recipient = to.trim();
+    if (!recipient) throw new Error("A reply recipient is required");
     const apiKey = envVar("AGENTMAIL_API_KEY");
     const inboxId = AGENTMAIL_INBOX_ID;
 
@@ -25,9 +28,10 @@ export const sendEmail = action({
           Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          to,
+          to: recipient,
           subject,
           text: truncate(text, 4000),
+          ...(threadId ? { thread_id: threadId } : {}),
         }),
       },
     );
@@ -51,9 +55,8 @@ export const draftReply = action({
   handler: async (
     ctx,
     { emailId, jobId, tone },
-  ): Promise<{ subject: string; body: string }> => {
-    const emailDoc = await ctx.runQuery(api.emails.list);
-    const email = emailDoc.find((e: any) => e._id === emailId);
+  ): Promise<{ to: string; threadId?: string; subject: string; body: string }> => {
+    const email = await ctx.runQuery(api.emails.get, { emailId });
     if (!email) throw new Error("Email not found");
 
     const jobDoc = await ctx.runQuery(api.jobs.get, { jobId });
@@ -79,6 +82,8 @@ Return ONLY JSON with these keys:
     const parsed = await openAIJSON(system, truncate(context, 4000));
 
     return {
+      to: email.from,
+      threadId: email.threadId,
       subject: parsed.subject || `Re: ${email.subject}`,
       body: parsed.body || "",
     };

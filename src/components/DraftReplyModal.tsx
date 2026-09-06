@@ -11,7 +11,7 @@ type Props = {
 
 export default function DraftReplyModal({ emailId, jobId, onClose }: Props) {
   const [phase, setPhase] = useState<"drafting" | "review" | "sending" | "done" | "error">("drafting");
-  const [draft, setDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [draft, setDraft] = useState<{ to: string; threadId?: string; subject: string; body: string } | null>(null);
   const [error, setError] = useState("");
   const draftReply = useAction(api.sendEmail.draftReply);
   const sendEmail = useAction(api.sendEmail.sendEmail);
@@ -35,10 +35,11 @@ export default function DraftReplyModal({ emailId, jobId, onClose }: Props) {
     setPhase("sending");
     try {
       await sendEmail({
-        to: "",
+        to: draft.to,
         subject: draft.subject,
         text: draft.body,
         jobId: jobId as any,
+        threadId: draft.threadId,
       });
       setPhase("done");
       toast("Draft reply sent", "success");
