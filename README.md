@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./public/favicon.svg" alt="JobPulse logo" width="96" height="96" />
+<img src="./public/favicon.svg" alt="JobPulse — the ember-pulse JP monogram from the landing page" width="120" height="120" />
 
 # JobPulse
 
@@ -25,6 +25,7 @@
   <img alt="Firecrawl" src="https://img.shields.io/badge/Scraping-Firecrawl-000000?style=flat-square">
   <img alt="AgentMail" src="https://img.shields.io/badge/Email-AgentMail-000000?style=flat-square">
   <img alt="license" src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square">
+  <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/JobPulse/jobpulse/ci.yml?branch=main&label=CI&style=flat-square">
   <img alt="status" src="https://img.shields.io/badge/status-hackathon%20submission-orange?style=flat-square">
   <img alt="hackathon" src="https://img.shields.io/badge/Hackathon-Convex%20All%20Gas-ffffff?style=flat-square">
 </p>
@@ -188,6 +189,17 @@ This project was built for the [**Convex All Gas Hackathon**](https://www.convex
 
 ---
 
+## Community
+
+| File | Description |
+|------|-------------|
+| [Code of Conduct](./CODE_OF_CONDUCT.md) | Our standards for inclusive participation |
+| [Contributing Guide](./CONTRIBUTING.md) | How to set up, develop, and submit a PR |
+| [Security Policy](./SECURITY.md) | How to report vulnerabilities responsibly |
+| [License](./LICENSE) | MIT |
+
+---
+
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE) for details.
