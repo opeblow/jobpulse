@@ -34,7 +34,7 @@
 
 ## Demo Video
 
-https://github.com/user-attachments/assets/626ebfc5-f682-4a77-8aa8-681e39a63880
+<video src="./JobPulseDemo.mp4" controls></video>
 
 ---
 
@@ -182,6 +182,39 @@ npx convex deploy --type static-site dist   # push the frontend to your convex.s
 ## Documentation
 
 - **[Build log (hackathon.md)](./hackathon.md)** — the full hacking process the judges read: what we built, the stack, the live URL, and the demo link.
+
+---
+
+## File structure
+
+```text
+jobpulse/
+├── convex/                    # Convex backend (schema, functions, HTTP)
+│   ├── _generated/            # Auto-generated client/server bindings
+│   ├── addJob.ts              # Add & parse a job posting
+│   ├── ai.ts                  # OpenAI classification + coach helpers
+│   ├── analytics.ts           # Funnel analytics queries
+│   ├── coach.ts               # AI Coach (fit score, gaps, interview prep)
+│   ├── convex.config.ts       # App + static-hosting component wiring
+│   ├── emails.ts              # Processed email storage + queries
+│   ├── http.ts                # HTTP router: webhook + static routes
+│   ├── jobs.ts                # Board queries & mutations
+│   ├── schema.ts              # DB schema (jobs, emails)
+│   └── sendEmail.ts           # Follow-up email actions
+├── src/                       # React + Vite frontend
+│   ├── components/            # AddJob, Coach, Column, JobCard, modals, etc.
+│   ├── screens/               # Board & Landing screens
+│   ├── App.tsx                # App root
+│   ├── board.ts               # Kanban board logic
+│   ├── main.tsx               # Entry point (Convex client)
+│   └── ...                    # Styles & theme
+├── .env.example               # Env vars (copy to .env.local)
+├── index.html                 # Vite entry HTML
+├── JobPulseDemo.mp4           # Demo video
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
 
 ---
 
