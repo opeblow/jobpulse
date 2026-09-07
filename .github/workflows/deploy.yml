@@ -25,9 +25,7 @@ jobs:
 
       - run: npm run typecheck
 
-      - run: npm run build
-
-      - name: Deploy to Convex
-        run: npx @convex-dev/static-hosting deploy --build-command 'npm run build'
+      - name: Deploy to Convex (build + deploy + upload)
+        run: npx @convex-dev/static-hosting deploy
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
