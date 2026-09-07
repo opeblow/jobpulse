@@ -204,4 +204,6 @@ This project was built for the [**Convex All Gas Hackathon**](https://www.convex
 
 MIT — see [LICENSE](./LICENSE) for details.
 
-Cache-bust: deploy-trigger-1
+## Author
+
+**Mobolaji Opeyemi Bolatito** — [opeblow2021@gmail.com](mailto:opeblow2021@gmail.com)
