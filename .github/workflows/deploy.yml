@@ -28,6 +28,6 @@ jobs:
       - run: npm run build
 
       - name: Deploy to Convex
-        run: npx convex deploy --cmd 'npx convex deploy --type static-site dist'
+        run: npx convex deploy --cmd 'npm run build'
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
