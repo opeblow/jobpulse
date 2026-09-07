@@ -1,9 +1,13 @@
 import { httpRouter } from "convex/server";
+import { registerStaticRoutes } from "@convex-dev/static-hosting";
 import { httpAction } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, components } from "./_generated/api";
 import { openAIJSON, truncate } from "./ai";
 
 const http = httpRouter();
+
+// Serve the static site (dist/) with SPA fallback via the static-hosting component.
+registerStaticRoutes(http, components.staticHosting);
 
 http.route({
   path: "/webhook/agentmail",

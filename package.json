@@ -9,9 +9,11 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "convex:dev": "convex dev",
-    "convex:push": "convex deploy"
+    "convex:push": "convex deploy",
+    "deploy": "npx @convex-dev/static-hosting deploy"
   },
   "dependencies": {
+    "@convex-dev/static-hosting": "^0.2.1",
     "convex": "^1.20.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
