@@ -34,7 +34,7 @@
 
 ## Demo Video
 
-<video src="./JobPulseDemo.mp4" controls></video>
+<video src="https://github.com/user-attachments/assets/626ebfc5-f682-4a77-8aa8-681e39a63880" controls></video>
 
 ---
 
