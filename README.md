@@ -25,7 +25,7 @@
   <img alt="Firecrawl" src="https://img.shields.io/badge/Scraping-Firecrawl-000000?style=flat-square">
   <img alt="AgentMail" src="https://img.shields.io/badge/Email-AgentMail-000000?style=flat-square">
   <img alt="license" src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square">
-  <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/JobPulse/jobpulse/ci.yml?branch=main&label=CI&style=flat-square">
+  <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/opeblow/jobpulse/ci.yml?branch=main&label=CI&style=flat-square">
   <img alt="status" src="https://img.shields.io/badge/status-hackathon%20submission-orange?style=flat-square">
   <img alt="hackathon" src="https://img.shields.io/badge/Hackathon-Convex%20All%20Gas-ffffff?style=flat-square">
 </p>
@@ -101,7 +101,7 @@ This app leans on Convex as the reactive core, not as a thin wrapper:
 ### 1. Clone & install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/opeblow/jobpulse.git
 cd jobpulse
 npm install
 ```
