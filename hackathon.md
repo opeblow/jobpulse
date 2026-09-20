@@ -8,12 +8,12 @@
 - **Repo:** https://github.com/opeblow/jobpulse.git
 - **Frontend:** React + Vite, deployed on Convex static hosting (convex.site)
 - **Convex deployment:** https://proficient-sandpiper-540.convex.site
-- **Components:** none
-- **Convex features:** schema, indexes, queries, mutations, actions, HTTP actions, real-time subscriptions
+- **Components:** `static-hosting`, `firecrawl` (@firecrawl/firecrawl-convex), `agentmail` (@agentmail/convex)
+- **Convex features:** schema, indexes, queries, mutations, actions, HTTP actions, real-time subscriptions, Convex components
 - **Auth:** none (single-user app)
 - **AI models:** gpt-4o-mini (configurable via `OPENAI_MODEL`)
 - **Started:** 2026-08-28T21:02:26Z
-- **Last updated:** 2026-09-03
+- **Last updated:** 2026-09-20
 
 ## Stack
 
@@ -82,12 +82,13 @@ jobpulse/
 │
 ├─ convex/                     # Convex backend
 │  ├─ _generated/              # Auto-generated client/server types
+│  ├─ convex.config.ts         # App assembly: static-hosting, firecrawl, agentmail components
 │  ├─ schema.ts                # Jobs + emails tables, fields, indexes
 │  ├─ jobs.ts                  # CRUD mutations + queries for job cards
 │  ├─ emails.ts                # Email storage, classification → job matching
-│  ├─ addJob.ts                # Action: Firecrawl scrape + OpenAI extraction
-│  ├─ coach.ts                 # Action: AI Application Coach (intel + coaching)
-│  ├─ sendEmail.ts             # Action: AgentMail outbound + AI draft replies
+│  ├─ addJob.ts                # Action: Firecrawl component scrape + OpenAI extraction
+│  ├─ coach.ts                 # Action: AI Application Coach (Firecrawl component intel + coaching)
+│  ├─ sendEmail.ts             # Action: AgentMail component durable send + AI draft replies
 │  ├─ http.ts                  # HTTP action: AgentMail webhook (/webhook/agentmail)
 │  ├─ analytics.ts             # Query: pipeline statistics
 │  ├─ ai.ts                    # OpenAI helper + env vars + AgentMail config
@@ -136,7 +137,11 @@ jobpulse/
 - **Schema validation** with typed fields and indexes
 - **Index-based queries** for sorting by column, timestamps, and job reference
 - **Mutations** for CRUD operations on jobs and emails
-- **Actions** for outbound API calls (Firecrawl, OpenAI, AgentMail)
+- **Actions** for outbound AI calls (OpenAI extraction, classification, coaching)
 - **HTTP actions** for AgentMail webhook endpoint
 - **Real-time subscriptions** via `useQuery` — board updates live
 - **Optimistic updates** on drag-and-drop column moves
+- **Convex components:**
+  - `@firecrawl/firecrawl-convex` — every scrape (job postings, AI Coach company intel) runs through the official Firecrawl component instead of raw HTTP
+  - `@agentmail/convex` — outbound follow-up emails go through the component's durable send pipeline (its embedded workpool delivers with bounded retries)
+  - `@convex-dev/static-hosting` — serves the frontend on convex.site
