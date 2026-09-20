@@ -3,10 +3,11 @@
 - **Project:** JobPulse
 - **Event:** Convex All Gas Hackathon
 - **What it does:** A real-time job application tracker with an AI-powered inbox. Paste a job posting URL and JobPulse scrapes it with Firecrawl, extracts the details with OpenAI, and drafts a tailored application checklist. Forward application emails to your AgentMail inbox and they're automatically classified (interview / offer / rejected / follow-up), matched to the right job card, and the board updates live. Send follow-up emails directly from the app, or let AI draft professional replies for you. Track your entire pipeline with analytics — response rates, conversion, time-to-interview.
-- **Live app:** (deploy before submission)
-- **Repo:** (add public GitHub link)
+- **Live app:** https://proficient-sandpiper-540.convex.site
+- **Demo video:** https://youtu.be/QKOzZZyr1us?si=zmbKeH_yKTgl8Hbk
+- **Repo:** https://github.com/opeblow/jobpulse.git
 - **Frontend:** React + Vite, deployed on Convex static hosting (convex.site)
-- **Convex deployment:** (add deployment URL)
+- **Convex deployment:** https://proficient-sandpiper-540.convex.site
 - **Components:** none
 - **Convex features:** schema, indexes, queries, mutations, actions, HTTP actions, real-time subscriptions
 - **Auth:** none (single-user app)
