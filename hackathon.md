@@ -67,6 +67,18 @@
   - a tactical prep plan
 - Everything persists to the job record in Convex and updates live
 
+## Convex depth at a glance
+
+This is not a thin frontend on a hosted page — Convex is the entire product spine:
+
+- **Schema + indexes** — typed `jobs` and `emails` tables with indexes on column, timestamps, and job references; every board/analytics read is index-backed, not a scan.
+- **Queries** — board, analytics, and email lists all read through queries; analytics aggregates (response rate, time-to-first-response) are computed live in Convex.
+- **Mutations** — CRUD for jobs/emails, optimistic update on drag-and-drop, classification → job matching flips cards atomically.
+- **Actions** — the whole AI pipeline runs server-side: Firecrawl component scrapes → OpenAI extracts → coordinates the coach. Actions stay under the Convex 4s budget by composing component calls + a webhook-driven inbound path instead of one giant blocking call.
+- **HTTP action** — AgentMail webhook (`/webhook/agentmail`) ingests inbound mail, classifies it with OpenAI, and drives the board — no client involved.
+- **Real-time** — `useQuery` subscriptions push board + analytics updates to every open tab; no polling anywhere.
+- **Convex components** — three mounted: `static-hosting` (serves the site), `firecrawl` (`@firecrawl/firecrawl-convex`, used for every scrape instead of raw HTTP), and `agentmail` (`@agentmail/convex`, outbound sends go through its durable workpool with bounded retries). Component tables ship in the same deployment, all visible live.
+
 ## File structure
 
 ```
