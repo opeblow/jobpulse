@@ -8,7 +8,7 @@
 
 > A real-time job application tracker with an AI-powered inbox. Paste a job posting URL and JobPulse scrapes it, extracts the details, and drafts your application checklist. Forward application emails to your own inbox and they're automatically classified, matched to the right job card, and the board updates live.
 
-[Live app](https://proficient-sandpiper-540.convex.site) · [Demo video](https://youtu.be/QKOzZZyr1us) · [Build log](./hackathon.md) · [Report an issue](mailto:opeblow2021@gmail.com)
+[Live app](https://proficient-sandpiper-540.convex.site) · [Demo video](https://youtu.be/QKOzZZyr1us) · [Build log](./hackathon.md) · [Social proof — post on X](https://x.com/OpeyemiBolatit1/status/2098417133944295846) · [Report an issue](mailto:opeblow2021@gmail.com)
 
 </div>
 
