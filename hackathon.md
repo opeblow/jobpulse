@@ -58,7 +58,7 @@
 - Real-time updates propagate to all open tabs via Convex subscriptions
 
 ### 7. AI Application Coach (Firecrawl + OpenAI)
-- Open any job card and hit "⚡ AI Coach"
+- Open any job card and hit "AI Coach"
 - Firecrawl crawls the company's website / careers / about pages to build "Company intel" (what they do, tech stack, culture, interview signals)
 - OpenAI combines the job requirements with that research to produce:
   - an **AI fit score** (0-100) shown right on the card
