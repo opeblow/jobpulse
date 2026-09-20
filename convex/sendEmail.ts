@@ -2,8 +2,8 @@
 
 import { v } from "convex/values";
 import { action } from "./_generated/server";
-import { api } from "./_generated/api";
-import { envVar, AGENTMAIL_INBOX_ID, truncate, openAIJSON } from "./ai";
+import { api, components } from "./_generated/api";
+import { AGENTMAIL_INBOX_ID, truncate, openAIJSON } from "./ai";
 
 export const sendEmail = action({
   args: {
@@ -13,36 +13,25 @@ export const sendEmail = action({
     jobId: v.optional(v.id("jobs")),
     threadId: v.optional(v.string()),
   },
-  handler: async (_ctx, { to, subject, text, threadId }) => {
+  handler: async (ctx, { to, subject, text }) => {
     const recipient = to.trim();
     if (!recipient) throw new Error("A reply recipient is required");
-    const apiKey = envVar("AGENTMAIL_API_KEY");
     const inboxId = AGENTMAIL_INBOX_ID;
 
-    const res = await fetch(
-      `https://api.agentmail.to/v0/inboxes/${encodeURIComponent(inboxId)}/messages/send`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          to: recipient,
-          subject,
-          text: truncate(text, 4000),
-          ...(threadId ? { thread_id: threadId } : {}),
-        }),
+    // Durable send through the @agentmail/convex component: enqueue a
+    // message, the component's workpool delivers it with bounded retries.
+    const outboundId = await ctx.runMutation(components.agentmail.lib.enqueueSend, {
+      inboxId,
+      kind: "send",
+      payload: {
+        to: recipient,
+        subject,
+        text: truncate(text, 4000),
       },
-    );
+      config: { retryAttempts: 5, initialBackoffMs: 30000 },
+    });
 
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`AgentMail send failed (${res.status}): ${body.slice(0, 500)}`);
-    }
-
-    const data: any = await res.json();
-    return { messageId: data.message_id, threadId: data.thread_id };
+    return { outboundId };
   },
 });
 

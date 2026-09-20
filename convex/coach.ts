@@ -1,9 +1,12 @@
 "use node";
 
 import { v } from "convex/values";
+import { FirecrawlClient } from "@firecrawl/firecrawl-convex";
 import { action } from "./_generated/server";
-import { api } from "./_generated/api";
-import { envVar, truncate, openAIJSON } from "./ai";
+import { api, components } from "./_generated/api";
+import { truncate, openAIJSON } from "./ai";
+
+const firecrawl = new FirecrawlClient(components.firecrawl);
 
 export const coach = action({
   args: {
@@ -17,7 +20,7 @@ export const coach = action({
     let intel: any = null;
     let intelNote = "";
     try {
-      intel = await fetchCompanyIntel(job);
+      intel = await fetchCompanyIntel(ctx, job);
     } catch (e: any) {
       intelNote = `Company research unavailable: ${e?.message ?? e}`;
     }
@@ -98,8 +101,7 @@ Rules: be concrete and role-specific, never generic fluff. Keep answers concise.
   },
 });
 
-async function fetchCompanyIntel(job: any): Promise<any> {
-  const firecrawlKey = envVar("FIRECRAWL_API_KEY");
+async function fetchCompanyIntel(ctx: any, job: any): Promise<any> {
   const company = job.company;
   const domain = deriveDomain(company);
 
@@ -107,7 +109,11 @@ async function fetchCompanyIntel(job: any): Promise<any> {
   let goodMarkdown = "";
   for (const url of candidateUrls(company, domain)) {
     try {
-      const md = await scrape(url, firecrawlKey);
+      const page = await firecrawl.scrape(ctx, url, {
+        formats: ["markdown"],
+        onlyMainContent: true,
+      });
+      const md = page.markdown ?? "";
       if (md && md.length > 400) {
         goodMarkdown = md;
         break;
@@ -160,27 +166,4 @@ function candidateUrls(company: string, domain: string): string[] {
     `https://www.${encodeURIComponent(domain)}.com/careers`,
     `https://en.wikipedia.org/wiki/${encodeURIComponent(company.replace(/\s+/g, "_"))}`,
   ];
-}
-
-async function scrape(url: string, key: string): Promise<string> {
-  const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      url,
-      formats: ["markdown"],
-      onlyMainContent: true,
-    }),
-  });
-  if (!res.ok) {
-    throw new Error(`Firecrawl failed (${res.status}) for ${url}`);
-  }
-  const data: any = await res.json();
-  if (!data?.success || !data?.data?.markdown) {
-    throw new Error(`No content for ${url}`);
-  }
-  return data.data.markdown;
 }

@@ -1,9 +1,12 @@
 "use node";
 
 import { v } from "convex/values";
+import { FirecrawlClient } from "@firecrawl/firecrawl-convex";
 import { action } from "./_generated/server";
-import { api } from "./_generated/api";
-import { envVar, openAIJSON, truncate } from "./ai";
+import { api, components } from "./_generated/api";
+import { openAIJSON, truncate } from "./ai";
+
+const firecrawl = new FirecrawlClient(components.firecrawl);
 
 const SCRAPE_PROMPT = `You are an expert job-posting analyst. From the job posting content provided, extract structured data.
 Return ONLY JSON with these exact keys:
@@ -24,12 +27,14 @@ export const addJob = action({
     ctx,
     { url },
   ): Promise<{ jobId: string; scrapeError: string | undefined }> => {
-    const firecrawlKey = envVar("FIRECRAWL_API_KEY");
-
     let markdown = "";
     let scrapeError: string | undefined;
     try {
-      markdown = await scrapeJob(url, firecrawlKey);
+      const page = await firecrawl.scrape(ctx, url, {
+        formats: ["markdown"],
+        onlyMainContent: true,
+      });
+      markdown = page.markdown ?? "";
     } catch (e: any) {
       scrapeError = e?.message ?? String(e);
       markdown = "";
@@ -69,27 +74,3 @@ export const addJob = action({
     return { jobId, scrapeError };
   },
 });
-
-async function scrapeJob(url: string, key: string): Promise<string> {
-  const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      url,
-      formats: ["markdown"],
-      onlyMainContent: true,
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Firecrawl scrape failed (${res.status}): ${body.slice(0, 300)}`);
-  }
-  const data: any = await res.json();
-  if (!data?.success) {
-    throw new Error(data?.error ?? "Firecrawl could not scrape the page.");
-  }
-  return data?.data?.markdown ?? "";
-}
