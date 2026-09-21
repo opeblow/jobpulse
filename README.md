@@ -28,6 +28,7 @@
   <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/opeblow/jobpulse/ci.yml?branch=main&label=CI&style=flat-square">
   <img alt="status" src="https://img.shields.io/badge/status-hackathon%20submission-orange?style=flat-square">
   <img alt="hackathon" src="https://img.shields.io/badge/Hackathon-Convex%20All%20Gas-ffffff?style=flat-square">
+  <img alt="Built with Codex" src="https://img.shields.io/badge/Built_with-Codex%20%2B%20Convex%20Plugin-10001f?style=flat-square&logo=OpenAI&logoColor=white">
 </p>
 
 ---
@@ -74,7 +75,8 @@ This app leans on Convex as the reactive core, not as a thin wrapper:
 - **Queries, mutations, and actions** — including `addJob`, `coach`, and `sendEmail` actions that call the sponsor APIs.
 - **HTTP action** at `/webhook/agentmail` — AgentMail pushes `message.received`, JobPulse classifies and updates the board, all server-side.
 - **Real-time subscriptions** — moving a card or receiving an email updates the UI live.
-- **`"use node"` actions** run Node runtime for outbound fetch calls.
+- **`"use node"` actions** run Node runtime for outbound fetch calls (Firecrawl, OpenAI, AgentMail).
+- **Built with Codex** using the [Convex plugin](https://www.convex.dev/docs/getting-started/plugins), which scaffolds Convex tables, queries, mutations, and actions via the Convex CLI (`convex dev`, `convex deploy`) integrated into the agent workflow.
 
 ---
 
@@ -87,6 +89,7 @@ This app leans on Convex as the reactive core, not as a thin wrapper:
 | **AI** | [OpenAI](https://openai.com) | Job extraction, email classification, draft replies, application coaching |
 | **Email** | [AgentMail](https://agentmail.to) | Inbound inbox + outbound sending |
 | **Frontend** | [React](https://react.dev) + [Vite](https://vite.dev) + [TypeScript](https://typescriptlang.org) | Kanban UI, analytics, theming |
+| **Build tooling** | [Codex](https://openai.com/codex) + [Convex plugin](https://www.convex.dev/docs/getting-started/plugins) | Agentic dev loop: Convex CLI (`convex dev`/`deploy`), schema/function scaffolding, component wiring |
 
 ---
 
@@ -223,7 +226,7 @@ jobpulse/
 This project was built for the [**Convex All Gas Hackathon**](https://www.convex.dev/hackathons/all-gas), sponsored by **OpenAI**, **Firecrawl**, and **AgentMail** — the three services that do real work in the product.
 
 <div align="center">
-  <sub>Made with <a href="https://convex.dev">Convex</a> · <a href="https://openai.com">OpenAI</a> · <a href="https://firecrawl.dev">Firecrawl</a> · <a href="https://agentmail.to">AgentMail</a></sub>
+  <sub>Made with <a href="https://openai.com/codex">Codex</a> (with <a href="https://www.convex.dev/docs/getting-started/plugins">Convex plugin</a>) · <a href="https://convex.dev">Convex</a> · <a href="https://openai.com">OpenAI</a> · <a href="https://firecrawl.dev">Firecrawl</a> · <a href="https://agentmail.to">AgentMail</a></sub>
 </div>
 
 ---

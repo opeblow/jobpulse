@@ -3,17 +3,17 @@
 - **Project:** JobPulse
 - **Event:** Convex All Gas Hackathon
 - **What it does:** A real-time job application tracker with an AI-powered inbox. Paste a job posting URL and JobPulse scrapes it with Firecrawl, extracts the details with OpenAI, and drafts a tailored application checklist. Forward application emails to your AgentMail inbox and they're automatically classified (interview / offer / rejected / follow-up), matched to the right job card, and the board updates live. Send follow-up emails directly from the app, or let AI draft professional replies for you. Track your entire pipeline with analytics — response rates, conversion, time-to-interview.
-- **Live app:** https://proficient-sandpiper-540.convex.site
-- **Demo video:** https://youtu.be/QKOzZZyr1us?si=zmbKeH_yKTgl8Hbk
-- **Repo:** https://github.com/opeblow/jobpulse.git
+- **Live app:** (deploy before submission)
+- **Repo:** (add public GitHub link)
 - **Frontend:** React + Vite, deployed on Convex static hosting (convex.site)
-- **Convex deployment:** https://proficient-sandpiper-540.convex.site
-- **Components:** `static-hosting`, `firecrawl` (@firecrawl/firecrawl-convex), `agentmail` (@agentmail/convex)
-- **Convex features:** schema, indexes, queries, mutations, actions, HTTP actions, real-time subscriptions, Convex components
+- **Convex deployment:** (add deployment URL)
+- **Components:** @convex-dev/static-hosting, @firecrawl/firecrawl-convex, @agentmail/convex
+- **Convex features:** schema, indexes, queries, mutations, actions, HTTP actions, real-time subscriptions
 - **Auth:** none (single-user app)
 - **AI models:** gpt-4o-mini (configurable via `OPENAI_MODEL`)
+- **Built with:** [Codex](https://openai.com/codex) with the [Convex plugin](https://www.convex.dev/docs/getting-started/plugins) — agentic coding assistant used for backend Convex functions, React components, and the Convex dev/deploy loop
 - **Started:** 2026-08-28T21:02:26Z
-- **Last updated:** 2026-09-20
+- **Last updated:** 2026-09-03
 
 ## Stack
 
@@ -67,18 +67,6 @@
   - a tactical prep plan
 - Everything persists to the job record in Convex and updates live
 
-## Convex depth at a glance
-
-This is not a thin frontend on a hosted page — Convex is the entire product spine:
-
-- **Schema + indexes** — typed `jobs` and `emails` tables with indexes on column, timestamps, and job references; every board/analytics read is index-backed, not a scan.
-- **Queries** — board, analytics, and email lists all read through queries; analytics aggregates (response rate, time-to-first-response) are computed live in Convex.
-- **Mutations** — CRUD for jobs/emails, optimistic update on drag-and-drop, classification → job matching flips cards atomically.
-- **Actions** — the whole AI pipeline runs server-side: Firecrawl component scrapes → OpenAI extracts → coordinates the coach. Actions stay under the Convex 4s budget by composing component calls + a webhook-driven inbound path instead of one giant blocking call.
-- **HTTP action** — AgentMail webhook (`/webhook/agentmail`) ingests inbound mail, classifies it with OpenAI, and drives the board — no client involved.
-- **Real-time** — `useQuery` subscriptions push board + analytics updates to every open tab; no polling anywhere.
-- **Convex components** — three mounted: `static-hosting` (serves the site), `firecrawl` (`@firecrawl/firecrawl-convex`, used for every scrape instead of raw HTTP), and `agentmail` (`@agentmail/convex`, outbound sends go through its durable workpool with bounded retries). Component tables ship in the same deployment, all visible live.
-
 ## File structure
 
 ```
@@ -94,13 +82,12 @@ jobpulse/
 │
 ├─ convex/                     # Convex backend
 │  ├─ _generated/              # Auto-generated client/server types
-│  ├─ convex.config.ts         # App assembly: static-hosting, firecrawl, agentmail components
 │  ├─ schema.ts                # Jobs + emails tables, fields, indexes
 │  ├─ jobs.ts                  # CRUD mutations + queries for job cards
 │  ├─ emails.ts                # Email storage, classification → job matching
-│  ├─ addJob.ts                # Action: Firecrawl component scrape + OpenAI extraction
-│  ├─ coach.ts                 # Action: AI Application Coach (Firecrawl component intel + coaching)
-│  ├─ sendEmail.ts             # Action: AgentMail component durable send + AI draft replies
+│  ├─ addJob.ts                # Action: Firecrawl scrape + OpenAI extraction
+│  ├─ coach.ts                 # Action: AI Application Coach (intel + coaching)
+│  ├─ sendEmail.ts             # Action: AgentMail outbound + AI draft replies
 │  ├─ http.ts                  # HTTP action: AgentMail webhook (/webhook/agentmail)
 │  ├─ analytics.ts             # Query: pipeline statistics
 │  ├─ ai.ts                    # OpenAI helper + env vars + AgentMail config
@@ -149,11 +136,8 @@ jobpulse/
 - **Schema validation** with typed fields and indexes
 - **Index-based queries** for sorting by column, timestamps, and job reference
 - **Mutations** for CRUD operations on jobs and emails
-- **Actions** for outbound AI calls (OpenAI extraction, classification, coaching)
+- **Actions** for outbound API calls (Firecrawl, OpenAI, AgentMail)
 - **HTTP actions** for AgentMail webhook endpoint
 - **Real-time subscriptions** via `useQuery` — board updates live
 - **Optimistic updates** on drag-and-drop column moves
-- **Convex components:**
-  - `@firecrawl/firecrawl-convex` — every scrape (job postings, AI Coach company intel) runs through the official Firecrawl component instead of raw HTTP
-  - `@agentmail/convex` — outbound follow-up emails go through the component's durable send pipeline (its embedded workpool delivers with bounded retries)
-  - `@convex-dev/static-hosting` — serves the frontend on convex.site
+- **Convex plugin** (Codex IDE integration) — `convex dev` / `convex deploy` CLI loop, component wiring (`@convex-dev/static-hosting`, `@firecrawl/firecrawl-convex`, `@agentmail/convex`), and function scaffolding throughout development
