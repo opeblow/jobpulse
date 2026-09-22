@@ -153,9 +153,9 @@ flowchart TD
     C --> M1 & M2 & M3 & M4 & M5
 
     subgraph Sponsors
-        FC[<b>🔥 Firecrawl</b><br/>scrape job URLs<br/>crawl company sites]
-        OAI[<b>🤖 OpenAI</b><br/>gpt-4o-mini<br/>extraction, classification, coach, draft]
-        AM[<b>📬 AgentMail</b><br/>inbound webhook<br/>outbound workpool]
+        FC[<b>Firecrawl</b><br/>scrape job URLs<br/>crawl company sites]
+        OAI[<b>OpenAI</b><br/>gpt-4o-mini<br/>extraction, classification, coach, draft]
+        AM[<b>AgentMail</b><br/>inbound webhook<br/>outbound workpool]
     end
 
     AC1 -->|scrape| FC

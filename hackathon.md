@@ -131,6 +131,65 @@ jobpulse/
    └─ gen-favicon.mjs          # PNG favicon generator (zlib encoder)
 ```
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph Frontend
+        A[<b>React + Vite UI</b><br/>Kanban board, analytics, AI Coach, dark/light mode]
+    end
+
+    subgraph Convex[Convex Backend]
+        B[<b>Convex client</b><br/>reactive pub/sub]
+        C[<b>Schema</b><br/>jobs + emails tables<br/>7 indexes]
+        Q1[<b>Queries</b><br/>jobs.list, emails.list<br/>analytics.get]
+        M1[<b>Mutations</b><br/>create, setColumn,<br/>patchCoach, applyClassificationToJob]
+        AC1[<b>Actions</b><br/>addJob: scrape + extract<br/>coach: intel + coaching<br/>sendEmail: outbound + draft]
+        HX[<b>HTTP action</b><br/>/webhook/agentmail<br/>deduplicate, classify, match, move]
+    end
+
+    subgraph Sponsors
+        FC[<b>Firecrawl</b><br/>scrape job URLs<br/>crawl company sites]
+        OAI[<b>OpenAI</b><br/>gpt-4o-mini<br/>extraction, classification,<br/>coach, draft replies]
+        AM[<b>AgentMail</b><br/>inbound webhook<br/>outbound workpool]
+    end
+
+    subgraph Components
+        COMP1[<b>@convex-dev/static-hosting</b>]
+        COMP2[<b>@firecrawl/firecrawl-convex</b>]
+        COMP3[<b>@agentmail/convex</b>]
+    end
+
+    %% Connections
+    A -->|useQuery| B
+    B --> C
+    C --> Q1
+    C --> M1
+    AC1 -->|scrape| FC
+    AC1 -->|JSON extraction| OAI
+    HX -->|classify email| OAI
+    HX -->|store + match job| M1
+    AC1 -->|enqueueSend| AM
+    AM -->|POST message.received| HX
+    COMP1 --> B
+    COMP2 --> AC1
+    COMP3 --> HX
+    COMP3 --> AC1
+
+    %% Live updates
+    Q1 -.->|real-time| A
+    M1 ==>|optimistic| A
+
+    classDef convex fill:#000,stroke:#000,color:#fff,stroke-width:2px
+    classDef sponsor fill:#1a1a1a,stroke:#333,color:#fff,stroke-width:2px
+    classDef component fill:#2a2a2a,stroke:#444,color:#fff,stroke-width:1px
+    class A,B,C,Q1,M1,AC1,HX convex
+    class FC,OAI,AM sponsor
+    class COMP1,COMP2,COMP3 component
+```
+
+---
+
 ## Convex features used
 
 - **Schema validation** with typed fields and indexes
