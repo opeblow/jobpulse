@@ -40,29 +40,33 @@
 
 | # | Section | What you'll find |
 |---|---------|-----------------|
-| 1 | [Overview](#why-jobpulse) | The problem, the vision, the live app |
-| 2 | [Features](#features) | Kanban board, AI inbox, AI Coach, analytics, dark mode |
-| 3 | [Sponsor deep dives](#sponsor-deep-dives) | How **Convex**, **OpenAI**, **Firecrawl**, and **AgentMail** work together |
-| 3.1 | [Built with Convex](#built-with-convex) | Schema, indexes, queries, mutations, actions, HTTP webhooks, real-time sync |
-| 3.2 | [Built with OpenAI](#built-with-openai) | Structured extraction, email classification, AI Coach, draft-reply generation |
-| 3.3 | [Built with Firecrawl](#built-with-firecrawl) | Job-posting scraping + multi-URL company-intel crawling |
-| 3.4 | [Built with AgentMail](#built-with-agentmail) | Inbound webhook → classification → job matching + durable outbound sends |
-| 4 | [Tech stack](#tech-stack) | Full layer-by-layer breakdown |
-| 5 | [Getting started](#getting-started) | Clone, run locally, set env vars |
-| 6 | [Usage](#usage) | Add jobs, forward emails, coach roles, follow up |
-| 7 | [Testing](#testing) | 41-endpoint integration suite + assert-based verification |
-| 8 | [Deployment](#deployment) | Deploy backend to Convex, push frontend to `convex.site` |
-| 9 | [Documentation](#documentation) | Build log and community files |
-| 10 | [File structure](#file-structure) | Where every Convex function and React component lives |
-| 11 | [Built for the Convex All Gas Hackathon](#built-for-the-convex-all-gas-hackathon) | Hackathon context, sponsors, and "made with" credits |
+| 1 | [Demo Video](#demo-video--welcometojobpulse) | #WelcomeToJobPulse — end-to-end walkthrough |
+| 2 | [Architecture](#architecture) | Full mermaid diagram — data flow across Convex, sponsors, frontend |
+| 3 | [Overview](#why-jobpulse) | The problem, the vision, the live app |
+| 4 | [Features](#features) | Kanban board, AI inbox, AI Coach, analytics, dark mode |
+| 5 | [Sponsor deep dives](#sponsor-deep-dives) | How **Convex**, **OpenAI**, **Firecrawl**, and **AgentMail** work together |
+| 5.1 | [Built with Convex](#built-with-convex) | Schema, indexes, queries, mutations, actions, HTTP webhooks, real-time sync |
+| 5.2 | [Built with OpenAI](#built-with-openai) | Structured extraction, email classification, AI Coach, draft-reply generation |
+| 5.3 | [Built with Firecrawl](#built-with-firecrawl) | Job-posting scraping + multi-URL company-intel crawling |
+| 5.4 | [Built with AgentMail](#built-with-agentmail) | Inbound webhook → classification → job matching + durable outbound sends |
+| 6 | [Tech stack](#tech-stack) | Full layer-by-layer breakdown |
+| 7 | [Getting started](#getting-started) | Clone, run locally, set env vars |
+| 8 | [Usage](#usage) | Add jobs, forward emails, coach roles, follow up |
+| 9 | [Testing](#testing) | 41-endpoint integration suite + assert-based verification |
+| 10 | [Deployment](#deployment) | Deploy backend to Convex, push frontend to `convex.site` |
+| 11 | [Documentation](#documentation) | Build log and community files |
+| 12 | [File structure](#file-structure) | Where every Convex function and React component lives |
+| 13 | [Built for the Convex All Gas Hackathon](#built-for-the-convex-all-gas-hackathon) | Hackathon context, sponsors, and "made with" credits |
 
 </details>
 
 ---
 
-## Demo Video
+## Demo Video — #WelcomeToJobPulse
 
-<video src="https://github.com/user-attachments/assets/626ebfc5-f682-4a77-8aa8-681e39a63880" controls></video>
+<video src="https://github.com/user-attachments/assets/626ebfc5-f682-4a77-8aa8-681e39a63880" controls width="100%" style="border-radius: 8px; max-width: 720px;">
+  #WelcomeToJobPulse — the full JobPulse experience from job paste to AI Coach
+</video>
 
 ---
 
@@ -104,6 +108,89 @@ This app leans on Convex as the reactive core, not as a thin wrapper:
 - **Real-time subscriptions** — moving a card or receiving an email updates the UI live.
 - **`"use node"` actions** run Node runtime for outbound fetch calls (Firecrawl, OpenAI, AgentMail).
 - **Built with Codex** using the [Convex plugin](https://www.convex.dev/docs/getting-started/plugins), which scaffolds Convex tables, queries, mutations, and actions via the Convex CLI (`convex dev`, `convex deploy`) integrated into the agent workflow.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph Frontend
+        A[<b>React + Vite UI</b><br/>Kanban board, analytics, coach modal<br/>dark/light mode] -->|useQuery| B
+    end
+
+    subgraph Convex[<b>Convex Backend</b><br/>Type-safe functions + real-time DB]
+        B[<b>Convex client</b><br/>reactive pub/sub]
+        B --> C[<b>Schema</b><br/>jobs + emails tables<br/>7 indexes]
+
+        subgraph Queries
+            Q1[<b>jobs.list</b><br/>sorted by updatedAt]
+            Q2[<b>emails.list</b><br/>sorted by receivedAt]
+            Q3[<b>analytics.get</b><br/>pipeline stats]
+        end
+
+        subgraph Mutations
+            M1[<b>jobs.create</b><br/>parse + insert card]
+            M2[<b>jobs.setColumn</b><br/>drag-and-drop move]
+            M3[<b>jobs.patchCoach</b><br/>persist AI Coach output]
+            M4[<b>emails.insertProcessed</b><br/>store classified email]
+            M5[<b>applyClassificationToJob</b><br/>auto-move card]
+        end
+
+        subgraph Actions
+            AC1[<b>addJob action</b><br/>scrape + extract]
+            AC2[<b>coach action</b><br/>company intel + coaching]
+            AC3[<b>sendEmail action</b><br/>outbound + draft]
+        end
+
+        subgraph HTTP
+            HX[<b>/webhook/agentmail</b><br/>deduplicate → classify → match → move]
+        end
+    end
+
+    B --> C
+    C --> Q1 & Q2 & Q3
+    C --> M1 & M2 & M3 & M4 & M5
+
+    subgraph Sponsors
+        FC[<b>🔥 Firecrawl</b><br/>scrape job URLs<br/>crawl company sites]
+        OAI[<b>🤖 OpenAI</b><br/>gpt-4o-mini<br/>extraction, classification, coach, draft]
+        AM[<b>📬 AgentMail</b><br/>inbound webhook<br/>outbound workpool]
+    end
+
+    AC1 -->|scrape| FC
+    AC1 -->|JSON extraction| OAI
+    AC2 -->|scrape company| FC
+    AC2 -->|coaching JSON| OAI
+    AC3 -->|draft reply| OAI
+    AC3 -->|enqueueSend| AM
+    HX -->|classification| OAI
+    HX -->|store + match| M4 & M5
+    AM -->|POST message.received| HX
+
+    subgraph Components
+        COMP1[<b>@convex-dev/static-hosting</b>]
+        COMP2[<b>@firecrawl/firecrawl-convex</b>]
+        COMP3[<b>@agentmail/convex</b>]
+    end
+
+    COMP1 --> B
+    COMP2 --> AC1 & AC2
+    COMP3 --> HX & AC3
+
+    %% Live updates
+    Q1 -.->|real-time| A
+    Q2 -.->|real-time| A
+    M2 ==>|optimistic| A
+
+    %% Styling
+    classDef convex fill:#000,stroke:#000,color:#fff,stroke-width:2px
+    classDef sponsor fill:#1a1a1a,stroke:#333,color:#fff,stroke-width:2px
+    classDef component fill:#2a2a2a,stroke:#444,color:#fff,stroke-width:1px
+    class B,C,Q1,Q2,Q3,M1,M2,M3,M4,M5,AC1,AC2,AC3,HX convex
+    class FC,OAI,AM sponsor
+    class COMP1,COMP2,COMP3 component
+```
 
 ---
 
